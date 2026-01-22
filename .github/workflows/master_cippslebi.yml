@@ -10,29 +10,23 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
     
     steps:
       - name: 'Checkout GitHub Action'
         uses: actions/checkout@v4
-      
-      - name: 'Login to Azure'
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_FLEX }}
       
       - name: 'Run Azure Functions Action'
         uses: Azure/functions-action@v1
         id: fa
         with:
           app-name: 'cippslebi'
+          slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          scm-do-build-during-deployment: false
-          enable-oryx-build: false
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4B07867CEDD14882827167AFBE3B4480 }}
+          sku: 'flexconsumption'
+        
